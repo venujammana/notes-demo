@@ -1,0 +1,31 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/trainocat-1773203046724/notes-repo/notes-app:${_COMMIT_SHA}'
+      - '.'
+
+  # Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/trainocat-1773203046724/notes-repo/notes-app:${_COMMIT_SHA}'
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google-appengine/exec-wrapper'
+    args:
+      - '-i'
+      - 'us-central1-docker.pkg.dev/trainocat-1773203046724/notes-repo/notes-app:${_COMMIT_SHA}'
+      - '-e'
+      - 'PORT=8080'
+      - '--'
+      - 'gunicorn'
+      - '-w'
+      - '4'
+      - '-b'
+      - '0.0.0.0:8080'
+      - 'main:app'
+images:
+  - 'us-central1-docker.pkg.dev/trainocat-1773203046724/notes-repo/notes-app:${_COMMIT_SHA}'

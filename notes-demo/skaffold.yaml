@@ -1,0 +1,29 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - k8s-manifests/*'
+build:
+  artifacts:
+    - image: us-central1-docker.pkg.dev/trainocat-1773203046724/notes-repo/notes-app
+      context: .
+profiles:
+  - name: dev
+    deploy:
+      cloudrun:
+        projectid: trainocat-1773203046724
+        region: us-central1
+        service: notes-app-dev
+  - name: staging
+    deploy:
+      cloudrun:
+        projectid: trainocat-1773203046724
+        region: us-central1
+        service: notes-app-staging
+  - name: prod
+    deploy:
+      cloudrun:
+        projectid: trainocat-1773203046724
+        region: us-central1
+        service: notes-app-prod

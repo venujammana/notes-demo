@@ -29,3 +29,5 @@ steps:
       - 'main:app'
 images:
   - 'us-central1-docker.pkg.dev/trainocat-1773203046724/notes-repo/notes-app:${_COMMIT_SHA}'
+options:
+     logging: CLOUD_LOGGING_ONLY

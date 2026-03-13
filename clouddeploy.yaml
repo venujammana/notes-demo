@@ -21,7 +21,7 @@ metadata:
   name: dev
 description: dev target
 run:
-  location: projects/trainocat-1773203046724/locations/us-central1
+  location: projects/$PROJECT_ID/locations/us-central1
 ---
 apiVersion: deploy.cloud.google.com/v1
 kind: Target
@@ -29,7 +29,7 @@ metadata:
   name: staging
 description: staging target
 run:
-  location: projects/trainocat-1773203046724/locations/us-central1
+  location: projects/$PROJECT_ID/locations/us-central1
 ---
 apiVersion: deploy.cloud.google.com/v1
 kind: Target
@@ -37,6 +37,6 @@ metadata:
   name: prod
 description: prod target
 run:
-  location: projects/trainocat-1773203046724/locations/us-central1
+  location: projects/$PROJECT_ID/locations/us-central1
 options:
   logging: CLOUD_LOGGING_ONLY

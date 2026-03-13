@@ -1,0 +1,29 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - k8s-manifests/*'
+build:
+  artifacts:
+    - image: us-central1-docker.pkg.dev/$PROJECT_ID/notes-repo/notes-app
+      context: .
+profiles:
+  - name: dev
+    deploy:
+      cloudrun:
+        projectid: $PROJECT_ID
+        region: us-central1
+        service: notes-app-dev
+  - name: staging
+    deploy:
+      cloudrun:
+        projectid: $PROJECT_ID
+        region: us-central1
+        service: notes-app-staging
+  - name: prod
+    deploy:
+      cloudrun:
+        projectid: $PROJECT_ID
+        region: us-central1
+        service: notes-app-prod

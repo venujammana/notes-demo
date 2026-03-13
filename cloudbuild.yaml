@@ -14,19 +14,20 @@ steps:
       - 'us-central1-docker.pkg.dev/$PROJECT_ID/notes-repo/notes-app:${_COMMIT_SHA}'
 
   # Deploy container image to Cloud Run
-  - name: 'gcr.io/google-appengine/exec-wrapper'
+  - name: 'gcr.io/cloud-builders/gcloud'
     args:
-      - '-i'
+      - 'run'
+      - 'deploy'
+      - 'notes-app'
+      - '--image'
       - 'us-central1-docker.pkg.dev/$PROJECT_ID/notes-repo/notes-app:${_COMMIT_SHA}'
-      - '-e'
-      - 'PORT=8080'
-      - '--'
-      - 'gunicorn'
-      - '-w'
-      - '4'
-      - '-b'
-      - '0.0.0.0:8080'
-      - 'main:app'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--port'
+      - '8080'
+      - '--allow-unauthenticated'
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/notes-repo/notes-app:${_COMMIT_SHA}'
 options:

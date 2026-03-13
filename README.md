@@ -143,7 +143,7 @@ We will use Cloud Build to automatically build and deploy our application. This 
     *   **Cloud Build configuration file location:** `cloudbuild.yaml`
     *   Click "Create".
 
-Now, whenever you push a change to the `main` branch of your GitHub repository, a new build will be triggered. Cloud Build will build your application, identified by its unique commit SHA, and then directly deploy it to Cloud Run using `gcloud run deploy`.
+Now, whenever you push a change to the `main` branch of your GitHub repository, a new build will be triggered. Cloud Build will build your application, identified by its unique commit SHA, and then push the Docker image to Artifact Registry. Cloud Deploy will then manage the deployment of this image to various Cloud Run environments.
 
 ## Cloud Deploy Pipeline
 
@@ -161,9 +161,32 @@ We will use Cloud Deploy to create a delivery pipeline that will deploy our appl
 
 We will use API Gateway to expose our Cloud Run service to the internet.
 
-1.  **Update the `openapi.yaml` file:**
+1.  **Configure `openapi.yaml`:**
 
-    Before creating the API Gateway, you need to update the `openapi.yaml` file. The `x-google-backend.address` field uses a placeholder `NOTES_APP_PROD_URL`. You must provide this as a substitution variable when triggering the build, setting its value to the URL of your `notes-app-prod` Cloud Run service. You can get the URL from the Cloud Run page in the Google Cloud Console.
+    The `openapi.yaml` file now uses a generic placeholder `https://NOTES_APP_URL_PLACEHOLDER` for the `x-google-backend.address` field. This placeholder needs to be dynamically replaced with the actual Cloud Run service URL for each environment (dev, staging, prod) after Cloud Deploy has successfully deployed the application.
+
+    To update the API Gateway configuration for a specific environment:
+    *   **Retrieve the Cloud Run Service URL:**
+        ```bash
+        gcloud run services describe <YOUR_CLOUD_RUN_SERVICE_NAME> --region us-central1 --format 'value(status.url)'
+        ```
+        (Replace `<YOUR_CLOUD_RUN_SERVICE_NAME>` with `notes-app-dev`, `notes-app-staging`, or `notes-app-prod` as appropriate).
+    *   **Update `openapi.yaml` Locally:**
+        Manually or programmatically replace `https://NOTES_APP_URL_PLACEHOLDER` in your local `notes-demo/openapi.yaml` file with the actual URL obtained in the previous step.
+    *   **Deploy/Update API Config and Gateway:**
+        ```bash
+        # Create a unique API config for the environment
+        gcloud api-gateway api-configs create notes-api-config-<ENV> \
+          --api=notes-api --openapi-spec=openapi.yaml \
+          --project=$(gcloud config get-value project) \
+          --backend-auth-service-account=notes-sa@$(gcloud config get-value project).iam.gserviceaccount.com
+
+        # Update the gateway to use the new config
+        gcloud api-gateway gateways update notes-gateway \
+          --api-config=notes-api-config-<ENV> \
+          --location=us-central1 --project=$(gcloud config get-value project)
+        ```
+        (Replace `<ENV>` with `dev`, `staging`, or `prod`).
 
 2.  **Create an API:**
 

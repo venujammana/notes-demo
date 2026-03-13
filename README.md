@@ -143,7 +143,7 @@ We will use Cloud Build to automatically build and deploy our application. This 
     *   **Cloud Build configuration file location:** `cloudbuild.yaml`
     *   Click "Create".
 
-Now, whenever you push a change to the `main` branch of your GitHub repository, a new build will be triggered, and your application, identified by its unique commit SHA, will be deployed to Cloud Run.
+Now, whenever you push a change to the `main` branch of your GitHub repository, a new build will be triggered. Cloud Build will build your application, identified by its unique commit SHA, and then directly deploy it to Cloud Run using `gcloud run deploy`.
 
 ## Cloud Deploy Pipeline
 
@@ -163,7 +163,7 @@ We will use API Gateway to expose our Cloud Run service to the internet.
 
 1.  **Update the `openapi.yaml` file:**
 
-    Before creating the API Gateway, you need to update the `openapi.yaml` file with the URL of your `notes-app-prod` Cloud Run service. You can get the URL from the Cloud Run page in the Google Cloud Console.
+    Before creating the API Gateway, you need to update the `openapi.yaml` file. The `x-google-backend.address` field uses a placeholder `NOTES_APP_PROD_URL`. You must provide this as a substitution variable when triggering the build, setting its value to the URL of your `notes-app-prod` Cloud Run service. You can get the URL from the Cloud Run page in the Google Cloud Console.
 
 2.  **Create an API:**
 

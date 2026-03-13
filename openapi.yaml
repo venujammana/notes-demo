@@ -13,7 +13,7 @@ paths:
       summary: Health check
       operationId: health
       x-google-backend:
-        address: https://notes-app-prod-xxxx-uc.a.run.app
+        address: https://NOTES_APP_PROD_URL
         protocol: h2
       responses:
         '200':

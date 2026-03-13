@@ -7,13 +7,13 @@ steps:
       - 'us-central1-docker.pkg.dev/$PROJECT_ID/notes-repo/notes-app:${_COMMIT_SHA}'
       - '.'
 
-  # Push the container image to Artifact Registry
+  # Push the container image to Artifact Registry 1
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - 'us-central1-docker.pkg.dev/$PROJECT_ID/notes-repo/notes-app:${_COMMIT_SHA}'
 
-  # Deploy container image to Cloud Run
+  # Deploy container image to Cloud Run 1
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'run'

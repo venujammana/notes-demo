@@ -38,3 +38,5 @@ metadata:
 description: prod target
 run:
   location: projects/trainocat-1773203046724/locations/us-central1
+options:
+  logging: CLOUD_LOGGING_ONLY
